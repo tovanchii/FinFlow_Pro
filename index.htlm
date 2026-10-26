@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth" data-theme="black-signature">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinFlow Pro — Wealth & Debt Dashboard</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root, [data-theme="black-signature"] {
+      --bg-primary: #070709;
+      --bg-elevated: #0e0e12;
+      --bg-card: linear-gradient(155deg, rgba(24, 24, 30, 0.92) 0%, rgba(12, 12, 16, 0.96) 100%);
+      --bg-card-solid: #121217;
+      --bg-muted: rgba(255, 255, 255, 0.035);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border-platinum: rgba(212, 175, 106, 0.24);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --gold-start: #e6c687;
+      --gold-end: #c59b4d;
+      --gold-text: #e2be78;
+      --gold-soft: rgba(212, 175, 106, 0.12);
+      --accent-tab: linear-gradient(135deg, rgba(212, 175, 106, 0.22) 0%, rgba(99, 102, 241, 0.08) 100%);
+      --shadow-luxury: 0 20px 45px -15px rgba(0, 0, 0, 0.75), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+      --radius-card: 1.35rem;
+    }
+
+    [data-theme="midnight-navy"] {
+      --bg-primary: #060b16;
+      --bg-elevated: #0b1324;
+      --bg-card: linear-gradient(155deg, rgba(17, 28, 53, 0.92) 0%, rgba(10, 17, 34, 0.96) 100%);
+      --bg-card-solid: #0f1a30;
+      --bg-muted: rgba(148, 163, 184, 0.06);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border-platinum: rgba(129, 140, 248, 0.26);
+      --border-subtle: rgba(148, 163, 184, 0.12);
+      --gold-start: #818cf8;
+      --gold-end: #4f46e5;
+      --gold-text: #a5b4fc;
+      --gold-soft: rgba(99, 102, 241, 0.14);
+      --accent-tab: linear-gradient(135deg, rgba(99, 102, 241, 0.28) 0%, rgba(56, 189, 248, 0.1) 100%);
+      --shadow-luxury: 0 20px 45px -15px rgba(2, 6, 23, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+    }
+
+    [data-theme="ivory-platinum"] {
+      --bg-primary: #f6f5f0;
+      --bg-elevated: #ffffff;
+      --bg-card: linear-gradient(155deg, #ffffff 0%, #faf9f5 100%);
+      --bg-card-solid: #ffffff;
+      --bg-muted: #efede6;
+      --text-primary: #0f172a;
+      --text-secondary: #576071;
+      --text-muted: #858e9e;
+      --border-platinum: rgba(180, 148, 90, 0.3);
+      --border-subtle: rgba(15, 23, 42, 0.07);
+      --gold-start: #1e293b;
+      --gold-end: #0f172a;
+      --gold-text: #9a7432;
+      --gold-soft: rgba(180, 148, 90, 0.12);
+      --accent-tab: linear-gradient(135deg, rgba(15, 23, 42, 0.09) 0%, rgba(180, 148, 90, 0.14) 100%);
+      --shadow-luxury: 0 14px 34px -12px rgba(15, 23, 42, 0.07), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+    }
+
+    body {
+      font-family: 'Be Vietnam Pro', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .num-display {
+      font-family: 'Inter', 'Be Vietnam Pro', sans-serif;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .luxury-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-luxury);
+      transition: transform 0.2s ease, border-color 0.25s ease;
+    }
+
+    .luxury-card-gold {
+      background: var(--bg-card);
+      border: 1px solid var(--border-platinum);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-luxury);
+    }
+
+    .luxury-header {
+      background: rgba(10, 10, 14, 0.82);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    [data-theme="ivory-platinum"] .luxury-header {
+      background: rgba(246, 245, 240, 0.88);
+    }
+
+    .btn-signature {
+      background: linear-gradient(135deg, var(--gold-start) 0%, var(--gold-end) 100%);
+      color: #09090b;
+      font-weight: 700;
+      box-shadow: 0 6px 20px -4px rgba(212, 175, 106, 0.45);
+      transition: all 0.2s ease;
+    }
+
+    [data-theme="midnight-navy"] .btn-signature,
+    [data-theme="ivory-platinum"] .btn-signature {
+      color: #ffffff;
+    }
+
+    .btn-signature:hover {
+      filter: brightness(1.06);
+      transform: translateY(-1px);
+    }
+
+    .btn-icon-luxury {
+      background: var(--bg-muted);
+      border: 1px solid var(--border-subtle);
+      color: var(--gold-text);
+      transition: all 0.2s ease;
+    }
+
+    .btn-icon-luxury:hover {
+      border-color: var(--border-platinum);
+      background: var(--gold-soft);
+    }
+
+    .capsule-badge {
+      background: var(--gold-soft);
+      border: 1px solid var(--border-platinum);
+      color: var(--gold-text);
+      backdrop-filter: blur(8px);
+    }
+
+    .nav-tab {
+      color: var(--text-secondary);
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .nav-tab.tab-active {
+      background: var(--accent-tab);
+      border-color: var(--border-platinum);
+      color: var(--text-primary);
+    }
+
+    .theme-muted-box {
+      background: var(--bg-muted);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .theme-text-sub {
+      color: var(--text-secondary);
+    }
+
+    .theme-text-muted {
+      color: var(--text-muted);
+    }
+
+    input, select, textarea {
+      background-color: var(--bg-card-solid);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--border-platinum);
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.25);
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col pb-24 lg:pb-10">
+
+  <!-- ==================== A. PREMIUM TOP HEADER ==================== -->
+  <header class="sticky top-0 z-30 backdrop-blur-xl luxury-header px-4 lg:px-8 py-3.5">
+    <div class="max-w-6xl mx-auto">
+      <!-- Top Row: Compact Brand, Capsule Badge & Action Bar -->
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl btn-signature flex items-center justify-center shadow-sm">
+            <i data-lucide="wallet" class="w-4 h-4 stroke-[2.2]"></i>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <h1 class="font-bold text-base sm:text-lg tracking-tight">FinFlow Pro</h1>
+            <span class="text-[11px] font-medium px-2.5 py-0.5 rounded-full capsule-badge">
+              v2.5 Mở Rộng
+            </span>
+          </div>
+        </div>
+
+
+      </div>
+
+      <!-- C. Sleek Capsule Navigation Tabs -->
+      <div class="mt-3.5 flex items-center gap-2 overflow-x-auto custom-scrollbar pb-0.5">
+        <button data-tab="dashboard" class="nav-tab tab-active px-4 py-1.5 rounded-full text-xs font-medium flex items-center gap-2 whitespace-nowrap">
+          <i data-lucide="layout-grid" class="w-3.5 h-3.5 stroke-[1.8]"></i>
+          <span>Tổng quan</span>
+        </button>
+        <button data-tab="cashflow" class="nav-tab px-4 py-1.5 rounded-full text-xs font-medium flex items-center gap-2 whitespace-nowrap">
+          <i data-lucide="arrow-left-right" class="w-3.5 h-3.5 stroke-[1.8]"></i>
+          <span>Sổ Thu Chi Hằng Ngày</span>
+        </button>
+        <button data-tab="debts" class="nav-tab px-4 py-1.5 rounded-full text-xs font-medium flex items-center gap-2 whitespace-nowrap">
+          <i data-lucide="scale" class="w-3.5 h-3.5 stroke-[1.8]"></i>
+          <span>Thống Kê Nợ & Cho Vay</span>
+          <span id="navDebtBadge" class="px-1.5 py-0.2 text-[10px] rounded-full bg-rose-500/20 text-rose-400 font-semibold">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN WORKSPACE ==================== -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
+
+    <!-- ==================== TAB 1: WEALTH OVERVIEW (TỔNG QUAN) ==================== -->
+    <section id="tab-dashboard" class="tab-panel space-y-5">
+
+      <!-- B. LUXURY METRIC CARDS (03. BLACK SIGNATURE LAYOUT) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+        <!-- HERO CARD: SỐ DƯ THUẦN (THÁNG NÀY) -->
+        <div class="luxury-card-gold lg:col-span-5 p-6 relative overflow-hidden flex flex-col justify-between min-h-[195px]">
+          <!-- Decorative Golden Silk Waves & Signature Black Card Artwork -->
+          <svg class="absolute inset-x-0 bottom-0 w-full h-28 pointer-events-none opacity-85" viewBox="0 0 400 110" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="goldWaveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#c59b4d" stop-opacity="0.05" />
+                <stop offset="50%" stop-color="#e6c687" stop-opacity="0.35" />
+                <stop offset="100%" stop-color="#c59b4d" stop-opacity="0.1" />
+              </linearGradient>
+              <linearGradient id="goldFillGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#d4af37" stop-opacity="0.16" />
+                <stop offset="100%" stop-color="#070709" stop-opacity="0.0" />
+              </linearGradient>
+            </defs>
+            <path d="M0,75 C90,95 160,25 250,55 C320,78 360,35 400,45 L400,110 L0,110 Z" fill="url(#goldFillGrad)" />
+            <path d="M0,75 C90,95 160,25 250,55 C320,78 360,35 400,45" fill="none" stroke="url(#goldWaveGrad)" stroke-width="2" />
+            <path d="M0,92 C120,60 200,98 310,64 C355,50 380,62 400,58" fill="none" stroke="url(#goldWaveGrad)" stroke-width="1.2" stroke-dasharray="3 2" />
+          </svg>
+
+          <!-- Subtle 3D Tilted Luxury Card Emblem -->
+          <div class="absolute -right-3 -bottom-4 w-28 h-20 rounded-xl border border-amber-300/30 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black shadow-2xl transform -rotate-12 pointer-events-none hidden sm:flex flex-col justify-between p-2.5 opacity-90">
+            <div class="flex justify-between items-center">
+              <span class="w-4 h-3 rounded-sm bg-gradient-to-tr from-amber-500/80 to-yellow-200/80"></span>
+              <span class="text-[7px] tracking-widest text-amber-300/70 font-semibold">SIGNATURE</span>
+            </div>
+            <div class="text-[8px] text-amber-200/60 tracking-widest font-mono">•••• 8899</div>
+          </div>
+
+          <!-- Top Header -->
+          <div class="relative z-10 flex items-start justify-between">
+            <div>
+              <span class="text-[11px] font-semibold uppercase tracking-[0.08em] theme-text-sub">SỐ DƯ THUẦN (THÁNG NÀY)</span>
+              <p id="kpiNetBalance" class="num-display text-3xl sm:text-4xl font-extrabold mt-2 tracking-tight">0 ₫</p>
+            </div>
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center border" style="background: var(--gold-soft); border-color: var(--border-platinum); color: var(--gold-text);">
+              <i data-lucide="credit-card" class="w-4 h-4 stroke-[1.8]"></i>
+            </div>
+          </div>
+
+          <!-- Bottom Micro-Indicator & Sparkline -->
+          <div class="relative z-10 mt-6 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-xs theme-text-sub">Tỷ lệ tiết kiệm:</span>
+              <span id="kpiSavingsRate" class="inline-flex items-center gap-1 text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
+                ↑ 0%
+              </span>
+            </div>
+            <svg id="sparklineNet" class="w-20 h-6 overflow-visible" viewBox="0 0 80 24"></svg>
+          </div>
+        </div>
+
+        <!-- MIDDLE PAIR: TỔNG THU NHẬP & CHI PHÍ TIÊU XÀI -->
+        <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Card: TỔNG THU NHẬP -->
+          <div class="luxury-card p-5 flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-semibold uppercase tracking-[0.08em] theme-text-sub">TỔNG THU NHẬP</span>
+              <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 flex items-center justify-center">
+                <i data-lucide="trending-up" class="w-4 h-4 stroke-[1.9]"></i>
+              </div>
+            </div>
+            <div class="my-3">
+              <p id="kpiTotalIncome" class="num-display text-2xl sm:text-[26px] font-extrabold text-emerald-400">0 ₫</p>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-white/5 text-xs">
+              <span class="theme-text-sub">Hôm nay: <strong id="kpiTodayIncome" class="text-emerald-400 font-semibold ml-1">+0 ₫</strong></span>
+              <svg id="sparklineIncome" class="w-16 h-5 overflow-visible" viewBox="0 0 64 20"></svg>
+            </div>
+          </div>
+
+          <!-- Card: CHI PHÍ TIÊU XÀI -->
+          <div class="luxury-card p-5 flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-semibold uppercase tracking-[0.08em] theme-text-sub">CHI PHÍ TIÊU XÀI</span>
+              <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-400 flex items-center justify-center">
+                <i data-lucide="shopping-bag" class="w-4 h-4 stroke-[1.9]"></i>
+              </div>
+            </div>
+            <div class="my-3">
+              <p id="kpiTotalExpense" class="num-display text-2xl sm:text-[26px] font-extrabold text-amber-400">0 ₫</p>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-white/5 text-xs">
+              <span class="theme-text-sub">Hôm nay: <strong id="kpiTodayExpense" class="text-amber-400 font-semibold ml-1">-0 ₫</strong></span>
+              <svg id="sparklineExpense" class="w-16 h-5 overflow-visible" viewBox="0 0 64 20"></svg>
+            </div>
+          </div>
+
+          <!-- Card Full-Width under Pair: TỔNG DƯ NỢ PHẢI TRẢ -->
+          <div class="luxury-card sm:col-span-2 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="space-y-1.5">
+              <span class="text-[11px] font-semibold uppercase tracking-[0.08em] theme-text-sub">TỔNG DƯ NỢ PHẢI TRẢ</span>
+              <p id="kpiTotalDebt" class="num-display text-2xl sm:text-3xl font-extrabold text-rose-400">0 ₫</p>
+              <div class="flex items-center gap-2 text-xs theme-text-sub pt-0.5">
+                <span>Cho vay cần thu hồi:</span>
+                <strong id="kpiTotalLoan" class="num-display text-sky-400 font-bold">0 ₫</strong>
+              </div>
+            </div>
+            <div class="flex sm:flex-col items-center sm:items-end justify-between gap-3">
+              <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-400 flex items-center justify-center">
+                <i data-lucide="flame" class="w-4 h-4 stroke-[1.9]"></i>
+              </div>
+              <button data-goto="debts" class="text-xs font-medium px-3 py-1.5 rounded-full capsule-badge hover:opacity-90 flex items-center gap-1">
+                <span>Quản lý khoản nợ</span>
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- D. DATA VISUALIZATION: DÒNG TIỀN THÁNG NÀY + PHÂN BỔ CHI TIÊU + XU HƯỚNG TUẦN -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <!-- Minimalist Cashflow Chart Card (Matches Mockup) -->
+        <div class="luxury-card p-5 sm:p-6 lg:col-span-8 flex flex-col justify-between">
+          <div>
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h3 class="text-xs font-semibold uppercase tracking-[0.08em] theme-text-sub">DÒNG TIỀN THÁNG NÀY</h3>
+              <select id="chartRangeSelect" class="text-xs font-medium px-3 py-1.5 rounded-full theme-muted-box cursor-pointer">
+                <option value="14">Tháng này (14 ngày)</option>
+                <option value="7">7 ngày qua</option>
+                <option value="30">30 ngày qua</option>
+              </select>
+            </div>
+
+            <!-- Inline Legend Pills -->
+            <div class="flex items-center gap-6 mt-3 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                <span class="theme-text-sub">Thu</span>
+                <strong id="chartLegendIncome" class="num-display font-bold text-emerald-400">0 ₫</strong>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                <span class="theme-text-sub">Chi</span>
+                <strong id="chartLegendExpense" class="num-display font-bold text-amber-400">0 ₫</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative h-60 mt-4">
+            <canvas id="dailyCashflowChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Right Column: Minimalist Donut Chart & Weekly Trend Card -->
+        <div class="lg:col-span-4 flex flex-col gap-5">
+          <!-- Donut Chart: Phân Bổ Chi Tiêu -->
+          <div class="luxury-card p-5 flex-1 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-semibold uppercase tracking-[0.08em] theme-text-sub">PHÂN BỔ CHI TIÊU</h3>
+              <span class="text-[11px] theme-text-muted">Tỷ trọng danh mục</span>
+            </div>
+            <div class="grid grid-cols-12 items-center gap-3 my-auto">
+              <div class="col-span-5 relative h-32">
+                <canvas id="expenseCategoryChart"></canvas>
+              </div>
+              <div id="categoryLegendList" class="col-span-7 space-y-2 text-xs max-h-36 overflow-y-auto custom-scrollbar pr-1"></div>
+            </div>
+          </div>
+
+          <!-- Weekly Trend Card -->
+          <div class="luxury-card p-5">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-semibold uppercase tracking-[0.08em] theme-text-sub">NHỊP CHI TIÊU 7 NGÀY</span>
+              <span id="weeklyTrendBadge" class="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">Kiểm soát tốt</span>
+            </div>
+            <div class="mt-2.5 flex items-baseline justify-between">
+              <div>
+                <p id="weeklyAvgSpend" class="num-display text-lg font-bold">0 ₫ <span class="text-xs font-normal theme-text-sub">/ ngày</span></p>
+              </div>
+              <span id="weeklyTxCount" class="text-xs theme-text-sub">0 giao dịch</span>
+            </div>
+            <div id="weeklyMiniBars" class="grid grid-cols-7 gap-1.5 items-end h-12 mt-3 pt-2"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM SNAPSHOT: KHOẢN NỢ ƯU TIÊN & GIAO DỊCH GẦN ĐÂY -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <!-- Priority Debts -->
+        <div class="luxury-card p-5 sm:p-6">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-semibold uppercase tracking-[0.08em] theme-text-sub">KHOẢN NỢ & CHO VAY ĐANG MỞ</span>
+            <button data-goto="debts" class="text-xs font-medium hover:underline" style="color: var(--gold-text);">
+              Xem chi tiết →
+            </button>
+          </div>
+          <div id="dashboardDebtList" class="space-y-3"></div>
+        </div>
+
+        <!-- Recent Daily Transactions -->
+        <div class="luxury-card p-5 sm:p-6">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-semibold uppercase tracking-[0.08em] theme-text-sub">GIAO DỊCH HẰNG NGÀY MỚI NHẤT</span>
+            <button data-goto="cashflow" class="text-xs font-medium hover:underline" style="color: var(--gold-text);">
+              Mở sổ thu chi →
+            </button>
+          </div>
+          <div id="dashboardRecentTx" class="space-y-2.5"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 2: DAILY CASHFLOW (SỔ THU CHI HẰNG NGÀY) ==================== -->
+    <section id="tab-cashflow" class="tab-panel hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left Form: Quick Entry -->
+        <div class="luxury-card p-6 lg:col-span-4 h-fit space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-semibold uppercase tracking-[0.08em] theme-text-sub">GHI CHÉP THU / CHI HẰNG NGÀY</h3>
+            <i data-lucide="sparkles" class="w-4 h-4" style="color: var(--gold-text);"></i>
+          </div>
+
+          <form id="cashflowForm" class="space-y-4">
+            <!-- Type Switch -->
+            <div class="grid grid-cols-2 gap-2 p-1 rounded-xl theme-muted-box">
+              <button type="button" data-txtype="expense" class="tx-type-btn py-2 rounded-lg text-xs font-semibold bg-amber-500 text-slate-950 shadow-sm transition-all">
+                - Chi Phí Tiêu Xài
+              </button>
+              <button type="button" data-txtype="income" class="tx-type-btn py-2 rounded-lg text-xs font-semibold theme-text-sub transition-all">
+                + Thu Nhập Hàng Ngày
+              </button>
+            </div>
+            <input type="hidden" id="txTypeInput" value="expense" />
+
+            <div>
+              <label class="block text-[11px] font-medium theme-text-sub mb-1.5">Số tiền (VNĐ)</label>
+              <input type="number" id="txAmountInput" required min="1000" step="1000" placeholder="VD: 150000" class="num-display w-full px-3.5 py-2.5 rounded-xl text-sm font-bold" />
+              <div class="flex flex-wrap gap-1.5 mt-2">
+                <button type="button" data-quickamt="50000" class="quick-amt-btn text-[11px] px-2.5 py-1 rounded-lg theme-muted-box hover:opacity-80">50k</button>
+                <button type="button" data-quickamt="150000" class="quick-amt-btn text-[11px] px-2.5 py-1 rounded-lg theme-muted-box hover:opacity-80">150k</button>
+                <button type="button" data-quickamt="500000" class="quick-amt-btn text-[11px] px-2.5 py-1 rounded-lg theme-muted-box hover:opacity-80">500k</button>
+                <button type="button" data-quickamt="1000000" class="quick-amt-btn text-[11px] px-2.5 py-1 rounded-lg theme-muted-box hover:opacity-80">1Tr</button>
+                <button type="button" data-quickamt="5000000" class="quick-amt-btn text-[11px] px-2.5 py-1 rounded-lg theme-muted-box hover:opacity-80">5Tr</button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-medium theme-text-sub mb-1.5">Danh mục</label>
+                <select id="txCategoryInput" class="w-full px-3 py-2.5 rounded-xl text-xs font-medium"></select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-medium theme-text-sub mb-1.5">Ngày</label>
+                <input type="date" id="txDateInput" required class="w-full px-3 py-2.5 rounded-xl text-xs font-medium" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-medium theme-text-sub mb-1.5">Nguồn tiền</label>
+              <select id="txWalletInput" class="w-full px-3 py-2.5 rounded-xl text-xs font-medium">
+                <option value="Tài khoản Ngân hàng">Tài khoản Ngân hàng</option>
+                <option value="Tiền mặt">Tiền mặt hằng ngày</option>
+                <option value="Ví điện tử">Ví điện tử (MoMo / Apple Pay)</option>
+                <option value="Thẻ tín dụng">Thẻ tín dụng Signature</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-medium theme-text-sub mb-1.5">Nội dung giao dịch</label>
+              <input type="text" id="txNoteInput" required placeholder="VD: Ăn trưa, Nhận thanh toán dự án..." class="w-full px-3.5 py-2.5 rounded-xl text-xs" />
+            </div>
+
+            <button type="submit" class="w-full btn-signature py-3 rounded-xl text-xs uppercase tracking-wider font-bold flex items-center justify-center gap-2">
+              <i data-lucide="check" class="w-4 h-4 stroke-[2.4]"></i>
+              <span>Lưu Giao Dịch</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Right List: Daily Ledger -->
+        <div class="luxury-card p-6 lg:col-span-8 flex flex-col space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 class="text-xs font-semibold uppercase tracking-[0.08em] theme-text-sub">NHẬT KÝ DÒNG TIỀN HẰNG NGÀY</h3>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="relative">
+                <input type="text" id="txSearchInput" placeholder="Tìm giao dịch..." class="pl-8 pr-3 py-1.5 rounded-full text-xs" />
+                <i data-lucide="search" class="w-3.5 h-3.5 theme-text-sub absolute left-3 top-2"></i>
+              </div>
+              <select id="txFilterType" class="px-3 py-1.5 rounded-full text-xs font-medium">
+                <option value="all">Tất cả</option>
+                <option value="expense">Chi tiêu</option>
+                <option value="income">Thu nhập</option>
+              </select>
+              <select id="txFilterCategory" class="px-3 py-1.5 rounded-full text-xs font-medium">
+                <option value="all">Mọi danh mục</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Filtered Summary Strip -->
+          <div class="grid grid-cols-3 gap-3 p-3.5 rounded-2xl theme-muted-box text-xs">
+            <div>
+              <span class="theme-text-sub block text-[11px]">Tổng Thu</span>
+              <span id="filteredIncomeSum" class="num-display font-bold text-sm text-emerald-400">+0 ₫</span>
+            </div>
+            <div>
+              <span class="theme-text-sub block text-[11px]">Tổng Chi</span>
+              <span id="filteredExpenseSum" class="num-display font-bold text-sm text-amber-400">-0 ₫</span>
+            </div>
+            <div>
+              <span class="theme-text-sub block text-[11px]">Dòng Tiền Ròng</span>
+              <span id="filteredNetSum" class="num-display font-bold text-sm">0 ₫</span>
+            </div>
+          </div>
+
+          <div id="dailyLedgerContainer" class="space-y-4 max-h-[540px] overflow-y-auto custom-scrollbar pr-1"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: DEBT & LOAN PORTFOLIO (THỐNG KÊ NỢ) ==================== -->
+    <section id="tab-debts" class="tab-panel hidden space-y-6">
+      <!-- Top Summary KPI Strip -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="luxury-card p-5">
+          <span class="text-[11px] font-semibold uppercase tracking-[0.08em] theme-text-sub">DƯ NỢ PHẢI TRẢ (ĐI VAY)</span>
+          <p id="debtSummaryBorrowed" class="num-display text-2xl font-extrabold text-rose-400 mt-2">0 ₫</p>
+          <span id="debtCountBorrowed" class="text-xs theme-text-sub mt-1 block">0 khoản đang mở</span>
+        </div>
+        <div class="luxury-card p-5">
+          <span class="text-[11px] font-semibold uppercase tracking-[0.08em] theme-text-sub">ĐÃ THANH TOÁN GỐC</span>
+          <p id="debtSummaryPaid" class="num-display text-2xl font-extrabold text-emerald-400 mt-2">0 ₫</p>
+          <span id="debtProgressAvg" class="text-xs theme-text-sub mt-1 block">Tiến độ: 0%</span>
+        </div>
+        <div class="luxury-card p-5">
+          <span class="text-[11px] font-semibold uppercase tracking-[0.08em] theme-text-sub">KHOẢN CHO VAY (PHẢI THU)</span>
+          <p id="debtSummaryLent" class="num-display text-2xl font-extrabold text-sky-400 mt-2">0 ₫</p>
+          <span id="debtCountLent" class="text-xs theme-text-sub mt-1 block">0 khoản cần thu hồi</span>
+        </div>
+      </div>
+
+      <!-- Filter Bar & Add Button -->
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <button data-debtfilter="all" class="debt-filter-btn nav-tab tab-active px-4 py-1.5 rounded-full text-xs font-medium">Tất cả khoản nợ</button>
+          <button data-debtfilter="borrowed" class="debt-filter-btn nav-tab px-4 py-1.5 rounded-full text-xs font-medium">Nợ Phải Trả</button>
+          <button data-debtfilter="lent" class="debt-filter-btn nav-tab px-4 py-1.5 rounded-full text-xs font-medium">Cho Vay Phải Thu</button>
+        </div>
+        <button id="btnOpenDebtModal2" class="btn-signature px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-1.5">
+          <i data-lucide="plus" class="w-3.5 h-3.5 stroke-[2.2]"></i>
+          <span>Thêm Khoản Nợ / Cho Vay</span>
+        </button>
+      </div>
+
+      <!-- Debt Cards Grid -->
+      <div id="debtCardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </section>
+
+  </main>
+
+  <!-- ==================== LUXURY BOTTOM DOCK (MOBILE & QUICK ACCESS) ==================== -->
+  <nav class="fixed bottom-4 inset-x-4 max-w-md mx-auto z-30 luxury-card-gold px-4 py-2 flex items-center justify-around backdrop-blur-xl bg-black/80 shadow-2xl">
+    <button data-docktab="dashboard" class="dock-btn flex flex-col items-center gap-1 py-1 text-[10px] font-medium" style="color: var(--gold-text);">
+      <i data-lucide="home" class="w-4 h-4"></i>
+      <span>Tổng quan</span>
+    </button>
+    <button data-docktab="cashflow" class="dock-btn flex flex-col items-center gap-1 py-1 text-[10px] font-medium theme-text-sub">
+      <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+      <span>Giao dịch</span>
+    </button>
+    <button id="btnDockPlus" class="w-11 h-11 -mt-5 rounded-full btn-signature flex items-center justify-center shadow-xl" title="Ghi Thu / Chi nhanh">
+      <i data-lucide="plus" class="w-5 h-5 stroke-[2.5]"></i>
+    </button>
+    <button data-docktab="debts" class="dock-btn flex flex-col items-center gap-1 py-1 text-[10px] font-medium theme-text-sub">
+      <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
+      <span>Khoản nợ</span>
+    </button>
+    <button id="btnDockTheme" class="flex flex-col items-center gap-1 py-1 text-[10px] font-medium theme-text-sub">
+      <i data-lucide="sparkles" class="w-4 h-4"></i>
+      <span>Theme</span>
+    </button>
+  </nav>
+
+  <!-- ==================== MODAL: ADD DEBT / LOAN ==================== -->
+  <div id="debtModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="luxury-card-gold max-w-md w-full p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <h3 class="font-bold text-sm uppercase tracking-wider">Thêm Khoản Nợ / Cho Vay</h3>
+        <button id="btnCloseDebtModal" class="p-1 rounded-lg hover:opacity-75">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <form id="debtForm" class="space-y-3.5">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] theme-text-sub mb-1">Loại khoản mục</label>
+            <select id="debtTypeInput" class="w-full px-3 py-2 rounded-xl text-xs font-semibold">
+              <option value="borrowed">Nợ phải trả (Đi vay)</option>
+              <option value="lent">Khoản cho vay (Phải thu)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] theme-text-sub mb-1">Mức ưu tiên</label>
+            <select id="debtPriorityInput" class="w-full px-3 py-2 rounded-xl text-xs font-semibold">
+              <option value="Cao">Ưu tiên Cao</option>
+              <option value="Trung bình">Trung bình</option>
+              <option value="Thấp">Dài hạn</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] theme-text-sub mb-1">Tên khoản nợ / Đối tác</label>
+          <input type="text" id="debtTitleInput" required placeholder="VD: Thẻ tín dụng VIB, Trả góp MacBook..." class="w-full px-3.5 py-2 rounded-xl text-xs" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] theme-text-sub mb-1">Tổng gốc (VNĐ)</label>
+            <input type="number" id="debtTotalInput" required min="10000" step="10000" placeholder="15000000" class="num-display w-full px-3 py-2 rounded-xl text-xs font-bold" />
+          </div>
+          <div>
+            <label class="block text-[11px] theme-text-sub mb-1">Đã trả / Đã thu (VNĐ)</label>
+            <input type="number" id="debtPaidInput" value="0" min="0" step="10000" class="num-display w-full px-3 py-2 rounded-xl text-xs font-bold" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] theme-text-sub mb-1">Lãi suất (%/năm)</label>
+            <input type="number" id="debtRateInput" value="0" min="0" max="100" step="0.5" class="w-full px-3 py-2 rounded-xl text-xs" />
+          </div>
+          <div>
+            <label class="block text-[11px] theme-text-sub mb-1">Ngày đáo hạn</label>
+            <input type="date" id="debtDueInput" required class="w-full px-3 py-2 rounded-xl text-xs" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] theme-text-sub mb-1">Ghi chú</label>
+          <input type="text" id="debtNoteInput" placeholder="VD: Thanh toán trước ngày 05 hàng tháng" class="w-full px-3.5 py-2 rounded-xl text-xs" />
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" id="btnCancelDebtModal" class="px-4 py-2 rounded-full text-xs font-medium theme-muted-box">Hủy</button>
+          <button type="submit" class="px-5 py-2 rounded-full text-xs font-bold btn-signature">Lưu Khoản Nợ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: RECORD DEBT PAYMENT ==================== -->
+  <div id="payDebtModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="luxury-card-gold max-w-sm w-full p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <h3 id="payDebtModalTitle" class="font-bold text-sm">Cập Nhật Thanh Toán Nợ</h3>
+        <button id="btnClosePayDebtModal" class="p-1 rounded-lg hover:opacity-75">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <form id="payDebtForm" class="space-y-3.5">
+        <input type="hidden" id="payDebtIdInput" />
+        <p id="payDebtInfoText" class="text-xs theme-text-sub"></p>
+        <div>
+          <label class="block text-[11px] theme-text-sub mb-1">Số tiền thanh toán đợt này (VNĐ)</label>
+          <input type="number" id="payDebtAmountInput" required min="1000" step="1000" class="num-display w-full px-3.5 py-2.5 rounded-xl text-sm font-bold" />
+        </div>
+        <label class="flex items-center gap-2 text-xs cursor-pointer theme-text-sub">
+          <input type="checkbox" id="payDebtSyncCashflow" checked class="rounded" />
+          <span>Tự động ghi vào Sổ Thu Chi hằng ngày</span>
+        </label>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" id="btnCancelPayDebt" class="px-4 py-2 rounded-full text-xs font-medium theme-muted-box">Đóng</button>
+          <button type="submit" class="px-5 py-2 rounded-full text-xs font-bold btn-signature">Xác Nhận</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: LUXURY THEME STUDIO ==================== -->
+  <div id="themeModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="luxury-card-gold max-w-md w-full p-6 space-y-5">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div>
+          <h3 class="font-bold text-sm uppercase tracking-wider">Luxury Theme Studio</h3>
+          <p class="text-xs theme-text-sub mt-0.5">Chọn phong cách Wealth Dashboard của bạn</p>
+        </div>
+        <button id="btnCloseThemeModal" class="p-1 rounded-lg hover:opacity-75">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-2.5">
+        <button data-settheme="black-signature" class="theme-preset-btn w-full p-3.5 rounded-2xl theme-muted-box text-left flex items-center justify-between hover:border-amber-400/50">
+          <div class="flex items-center gap-3">
+            <span class="w-6 h-6 rounded-full bg-gradient-to-br from-amber-300 to-amber-600 border border-black shadow"></span>
+            <div>
+              <p class="text-xs font-bold">03. Black Signature (Mặc định)</p>
+              <p class="text-[11px] theme-text-sub">Đen Obsidian & Vàng Champagne — Quyền lực, tối giản</p>
+            </div>
+          </div>
+          <i data-lucide="check-circle-2" class="w-4 h-4 text-amber-400"></i>
+        </button>
+
+        <button data-settheme="midnight-navy" class="theme-preset-btn w-full p-3.5 rounded-2xl theme-muted-box text-left flex items-center justify-between hover:border-indigo-400/50">
+          <div class="flex items-center gap-3">
+            <span class="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-400 to-slate-900 border border-indigo-300 shadow"></span>
+            <div>
+              <p class="text-xs font-bold">02. Midnight Navy Executive</p>
+              <p class="text-[11px] theme-text-sub">Navy đậm & Platinum Indigo — Điềm tĩnh, chuẩn xác</p>
+            </div>
+          </div>
+          <i data-lucide="sparkles" class="w-4 h-4 text-indigo-400"></i>
+        </button>
+
+        <button data-settheme="ivory-platinum" class="theme-preset-btn w-full p-3.5 rounded-2xl theme-muted-box text-left flex items-center justify-between hover:border-amber-600/40">
+          <div class="flex items-center gap-3">
+            <span class="w-6 h-6 rounded-full bg-[#f6f5f0] border-2 border-amber-700/40 shadow"></span>
+            <div>
+              <p class="text-xs font-bold">01. Ivory & Warm Platinum</p>
+              <p class="text-[11px] theme-text-sub">Trắng ngà ấm & Viền mảnh ánh kim — Tinh tế ban ngày</p>
+            </div>
+          </div>
+          <i data-lucide="sun" class="w-4 h-4 text-amber-500"></i>
+        </button>
+      </div>
+
+      <div class="pt-3 flex justify-between items-center border-t border-white/10">
+        <button id="btnResetDemoData" class="text-xs text-rose-400 font-medium hover:underline">Đặt lại toàn bộ số liệu về 0</button>
+        <button id="btnDoneThemeModal" class="px-5 py-2 rounded-full text-xs font-bold btn-signature">Hoàn Tất</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== LUXURY COMPLETION POPUP MODAL ==================== -->
+  <div id="toastBox" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="luxury-card-gold max-w-sm w-full p-6 space-y-5 shadow-2xl relative overflow-hidden text-center">
+      <!-- Top Decorative Glow -->
+      <div class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center border shadow-lg" id="popupIconWrap" style="background: var(--gold-soft); border-color: var(--border-platinum); color: var(--gold-text);">
+        <i id="popupIcon" data-lucide="check-circle-2" class="w-7 h-7 stroke-[2.2]"></i>
+      </div>
+
+      <div class="space-y-1">
+        <span id="popupBadge" class="inline-block text-[10px] font-bold uppercase tracking-[0.12em] px-3 py-0.5 rounded-full capsule-badge">
+          HOÀN TẤT LƯU SỐ LIỆU
+        </span>
+        <h3 id="toastMessage" class="font-bold text-base sm:text-lg pt-1">Đã lưu hoạt động thành công!</h3>
+        <p id="popupSubtitle" class="text-xs theme-text-sub">Số liệu đã được cập nhật vào bảng điều khiển của bạn</p>
+      </div>
+
+      <!-- Receipt Summary Box -->
+      <div id="popupDetailsBox" class="p-4 rounded-2xl theme-muted-box text-left space-y-2.5 text-xs">
+      </div>
+
+      <!-- Popup Action Buttons -->
+      <div class="grid grid-cols-2 gap-2.5 pt-1">
+        <button type="button" id="btnClosePopupModal" class="py-2.5 px-4 rounded-full text-xs font-semibold theme-muted-box hover:opacity-85">
+          Đóng lại
+        </button>
+        <button type="button" id="btnPopupGoDashboard" class="py-2.5 px-4 rounded-full text-xs font-bold btn-signature">
+          Xem Tổng Quan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==================== STATE & DEFAULT DATA ====================
+    const STORAGE_KEY = 'finflow_black_signature_zero_v1';
+
+    const EXPENSE_CATEGORIES = [
+      'Ăn uống & Cafe',
+      'Di chuyển & Xăng xe',
+      'Nhà cửa & Điện nước',
+      'Mua sắm & Sinh hoạt',
+      'Trả nợ & Lãi vay',
+      'Giải trí & Sức khỏe'
+    ];
+
+    const INCOME_CATEGORIES = [
+      'Lương chính',
+      'Thưởng & Cổ tức',
+      'Freelance / Kinh doanh',
+      'Thu hồi nợ cho vay',
+      'Thu nhập khác'
+    ];
+
+    function getOffsetDate(daysAgo) {
+      const d = new Date();
+      d.setDate(d.getDate() - daysAgo);
+      return d.toISOString().split('T')[0];
+    }
+
+    function createInitialState() {
+      return {
+        theme: 'black-signature',
+        transactions: [],
+        debts: []
+      };
+    }
+
+    let appState = loadState();
+    let activeDebtFilter = 'all';
+    let dailyChartInstance = null;
+    let categoryChartInstance = null;
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          return Object.assign(createInitialState(), parsed);
+        }
+      } catch (err) {
+        // Fallback in sandboxed iframe
+      }
+      return createInitialState();
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      } catch (err) {
+        // Ignore storage error
+      }
+    }
+
+    function formatVND(num) {
+      const val = Math.round(Number(num) || 0);
+      return val.toLocaleString('vi-VN') + ' ₫';
+    }
+
+    function formatCompactM(num) {
+      const val = Number(num) || 0;
+      if (val >= 1000000) {
+        return (val / 1000000).toFixed(2).replace('.', ',') + 'M';
+      }
+      if (val >= 1000) {
+        return Math.round(val / 1000) + 'k';
+      }
+      return val.toString();
+    }
+
+    function showToast(msg, details = null) {
+      const box = document.getElementById('toastBox');
+      const text = document.getElementById('toastMessage');
+      const badge = document.getElementById('popupBadge');
+      const subtitle = document.getElementById('popupSubtitle');
+      const detailsBox = document.getElementById('popupDetailsBox');
+      const iconWrap = document.getElementById('popupIconWrap');
+
+      text.textContent = msg;
+
+      if (details) {
+        badge.textContent = details.badge || 'HOÀN TẤT LƯU SỐ LIỆU';
+        subtitle.textContent = details.subtitle || 'Dữ liệu đã được đồng bộ vào hệ thống';
+        if (details.tone === 'income') {
+          iconWrap.style.background = 'rgba(16, 185, 129, 0.14)';
+          iconWrap.style.borderColor = 'rgba(52, 211, 153, 0.35)';
+          iconWrap.style.color = '#34d399';
+        } else if (details.tone === 'expense') {
+          iconWrap.style.background = 'rgba(245, 158, 11, 0.14)';
+          iconWrap.style.borderColor = 'rgba(251, 191, 36, 0.35)';
+          iconWrap.style.color = '#fbbf24';
+        } else if (details.tone === 'debt') {
+          iconWrap.style.background = 'rgba(244, 63, 94, 0.14)';
+          iconWrap.style.borderColor = 'rgba(251, 113, 133, 0.35)';
+          iconWrap.style.color = '#fb7185';
+        } else {
+          iconWrap.style.background = 'var(--gold-soft)';
+          iconWrap.style.borderColor = 'var(--border-platinum)';
+          iconWrap.style.color = 'var(--gold-text)';
+        }
+
+        if (details.rows && details.rows.length > 0) {
+          detailsBox.classList.remove('hidden');
+          detailsBox.innerHTML = details.rows.map(r => `
+            <div class="flex items-center justify-between gap-2">
+              <span class="theme-text-sub">${r.label}</span>
+              <strong class="num-display font-bold ${r.color || ''}">${r.value}</strong>
+            </div>
+          `).join('');
+        } else {
+          detailsBox.classList.add('hidden');
+        }
+      } else {
+        badge.textContent = 'THÔNG BÁO HỆ THỐNG';
+        subtitle.textContent = 'Trạng thái đã được cập nhật thành công';
+        iconWrap.style.background = 'var(--gold-soft)';
+        iconWrap.style.borderColor = 'var(--border-platinum)';
+        iconWrap.style.color = 'var(--gold-text)';
+        detailsBox.classList.add('hidden');
+      }
+
+      box.classList.remove('hidden');
+      box.classList.add('flex');
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function applyTheme() {
+      document.documentElement.setAttribute('data-theme', appState.theme || 'black-signature');
+    }
+
+    // ==================== MINI SPARKLINE GENERATOR ====================
+    function drawSparkline(svgId, values, strokeColor) {
+      const svg = document.getElementById(svgId);
+      if (!svg || !values.length) return;
+      const w = 64;
+      const h = 20;
+      const min = Math.min(...values);
+      const max = Math.max(...values, min + 1);
+      const pts = values.map((v, idx) => {
+        const x = (idx / Math.max(1, values.length - 1)) * w;
+        const y = h - ((v - min) / (max - min)) * (h - 4) - 2;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(' ');
+      svg.innerHTML = `
+        <polyline fill="none" stroke="${strokeColor}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" points="${pts}" />
+      `;
+    }
+
+    // ==================== RENDER ALL ====================
+    function renderAll() {
+      applyTheme();
+      renderDashboard();
+      renderCashflowTab();
+      renderDebtsTab();
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
+    function renderDashboard() {
+      const todayStr = getOffsetDate(0);
+
+      let totalIncome = 0;
+      let totalExpense = 0;
+      let todayIncome = 0;
+      let todayExpense = 0;
+
+      appState.transactions.forEach(t => {
+        if (t.type === 'income') {
+          totalIncome += Number(t.amount);
+          if (t.date === todayStr) todayIncome += Number(t.amount);
+        } else {
+          totalExpense += Number(t.amount);
+          if (t.date === todayStr) todayExpense += Number(t.amount);
+        }
+      });
+
+      const netBalance = totalIncome - totalExpense;
+      const savingsRate = totalIncome > 0 ? Math.max(0, Math.round((netBalance / totalIncome) * 100)) : 0;
+
+      let totalDebtRemaining = 0;
+      let totalLoanRemaining = 0;
+      let activeDebtsCount = 0;
+
+      appState.debts.forEach(d => {
+        const rem = Math.max(0, Number(d.totalAmount) - Number(d.paidAmount));
+        if (d.type === 'borrowed') {
+          totalDebtRemaining += rem;
+          if (rem > 0) activeDebtsCount++;
+        } else {
+          totalLoanRemaining += rem;
+        }
+      });
+
+      document.getElementById('kpiNetBalance').textContent = formatVND(netBalance);
+      document.getElementById('kpiSavingsRate').textContent = `↑ ${savingsRate}%`;
+      document.getElementById('kpiTotalIncome').textContent = formatVND(totalIncome);
+      document.getElementById('kpiTodayIncome').textContent = '+' + formatVND(todayIncome);
+      document.getElementById('kpiTotalExpense').textContent = formatVND(totalExpense);
+      document.getElementById('kpiTodayExpense').textContent = '-' + formatVND(todayExpense);
+      document.getElementById('kpiTotalDebt').textContent = formatVND(totalDebtRemaining);
+      document.getElementById('kpiTotalLoan').textContent = formatVND(totalLoanRemaining);
+      document.getElementById('navDebtBadge').textContent = activeDebtsCount;
+
+      document.getElementById('chartLegendIncome').textContent = formatCompactM(totalIncome);
+      document.getElementById('chartLegendExpense').textContent = formatCompactM(totalExpense);
+
+      // Sparklines & 7-Day Weekly Trend
+      const last7Inc = [];
+      const last7Exp = [];
+      const last7Net = [];
+      for (let i = 6; i >= 0; i--) {
+        const dStr = getOffsetDate(i);
+        const dayInc = appState.transactions.filter(t => t.date === dStr && t.type === 'income').reduce((s, t) => s + Number(t.amount), 0);
+        const dayExp = appState.transactions.filter(t => t.date === dStr && t.type === 'expense').reduce((s, t) => s + Number(t.amount), 0);
+        last7Inc.push(dayInc);
+        last7Exp.push(dayExp);
+        last7Net.push(dayInc - dayExp);
+      }
+      drawSparkline('sparklineNet', last7Net, '#34d399');
+      drawSparkline('sparklineIncome', last7Inc, '#2dd4bf');
+      drawSparkline('sparklineExpense', last7Exp, '#fbbf24');
+
+      // Weekly Trend Card
+      const sum7Exp = last7Exp.reduce((a, b) => a + b, 0);
+      const avg7Exp = Math.round(sum7Exp / 7);
+      document.getElementById('weeklyAvgSpend').innerHTML = `${formatVND(avg7Exp)} <span class="text-xs font-normal theme-text-sub">/ ngày</span>`;
+      document.getElementById('weeklyTxCount').textContent = `${appState.transactions.length} giao dịch`;
+
+      const max7 = Math.max(...last7Exp, 1);
+      document.getElementById('weeklyMiniBars').innerHTML = last7Exp.map((val, idx) => {
+        const hPct = Math.max(15, Math.round((val / max7) * 100));
+        const isToday = idx === 6;
+        return `
+          <div class="flex flex-col items-center gap-1 h-full justify-end">
+            <div class="w-full rounded-t-md ${isToday ? 'bg-amber-400' : 'bg-white/15'}" style="height:${hPct}%"></div>
+            <span class="text-[9px] theme-text-muted">T${idx + 2 > 7 ? 'CN' : idx + 2}</span>
+          </div>
+        `;
+      }).join('');
+
+      // Priority Debts Snapshot
+      const debtContainer = document.getElementById('dashboardDebtList');
+      const activeDebts = appState.debts.filter(d => (d.totalAmount - d.paidAmount) > 0).slice(0, 3);
+      if (activeDebts.length === 0) {
+        debtContainer.innerHTML = `<p class="text-xs theme-text-sub py-4 text-center">Không có khoản nợ nào đang tồn đọng.</p>`;
+      } else {
+        debtContainer.innerHTML = activeDebts.map(d => {
+          const rem = d.totalAmount - d.paidAmount;
+          const pct = Math.min(100, Math.round((d.paidAmount / d.totalAmount) * 100));
+          const isBorrowed = d.type === 'borrowed';
+          return `
+            <div class="p-3.5 rounded-2xl theme-muted-box flex flex-col gap-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full ${isBorrowed ? 'bg-rose-400' : 'bg-sky-400'}"></span>
+                  <h4 class="font-semibold text-xs">${d.title}</h4>
+                </div>
+                <span class="num-display text-xs font-bold ${isBorrowed ? 'text-rose-400' : 'text-sky-400'}">${formatVND(rem)}</span>
+              </div>
+              <div class="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+                <div class="h-full ${isBorrowed ? 'bg-gradient-to-r from-amber-400 to-rose-400' : 'bg-sky-400'}" style="width: ${pct}%"></div>
+              </div>
+              <div class="flex items-center justify-between text-[11px] theme-text-sub">
+                <span>Đã trả ${pct}% • Hạn: ${d.dueDate}</span>
+                <button data-paydebt="${d.id}" class="font-semibold hover:underline" style="color: var(--gold-text);">
+                  ${isBorrowed ? 'Trả bớt →' : 'Thu hồi →'}
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Recent Transactions Snapshot
+      const recentTxContainer = document.getElementById('dashboardRecentTx');
+      const sortedTx = [...appState.transactions].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4);
+      if (sortedTx.length === 0) {
+        recentTxContainer.innerHTML = `<p class="text-xs theme-text-sub py-4 text-center">Chưa có giao dịch nào. Bấm dấu (+) ở thanh dưới để thêm hoạt động.</p>`;
+      } else {
+        recentTxContainer.innerHTML = sortedTx.map(t => {
+        const isInc = t.type === 'income';
+        return `
+          <div class="flex items-center justify-between p-3 rounded-2xl theme-muted-box">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-xl flex items-center justify-center ${isInc ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}">
+                <i data-lucide="${isInc ? 'arrow-down-left' : 'arrow-up-right'}" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <p class="text-xs font-semibold">${t.note}</p>
+                <p class="text-[11px] theme-text-sub">${t.category} • ${t.date}</p>
+              </div>
+            </div>
+            <span class="num-display text-xs font-bold ${isInc ? 'text-emerald-400' : 'text-amber-400'}">
+              ${isInc ? '+' : '-'}${formatVND(t.amount)}
+            </span>
+          </div>
+        `;
+      }).join('');
+      }
+
+      renderCharts();
+    }
+
+    function renderCharts() {
+      const rangeDays = Number(document.getElementById('chartRangeSelect').value || 14);
+      const labels = [];
+      const incomeSeries = [];
+      const expenseSeries = [];
+
+      for (let i = rangeDays - 1; i >= 0; i--) {
+        const dStr = getOffsetDate(i);
+        labels.push('T' + (rangeDays - i));
+        const dayInc = appState.transactions
+          .filter(t => t.date === dStr && t.type === 'income')
+          .reduce((s, t) => s + Number(t.amount), 0);
+        const dayExp = appState.transactions
+          .filter(t => t.date === dStr && t.type === 'expense')
+          .reduce((s, t) => s + Number(t.amount), 0);
+        incomeSeries.push(dayInc);
+        expenseSeries.push(dayExp);
+      }
+
+      const ctxDaily = document.getElementById('dailyCashflowChart').getContext('2d');
+      if (dailyChartInstance) dailyChartInstance.destroy();
+
+      const gradExpense = ctxDaily.createLinearGradient(0, 0, 0, 220);
+      gradExpense.addColorStop(0, '#f59e0b');
+      gradExpense.addColorStop(1, 'rgba(217, 119, 6, 0.25)');
+
+      const gradIncome = ctxDaily.createLinearGradient(0, 0, 0, 220);
+      gradIncome.addColorStop(0, '#34d399');
+      gradIncome.addColorStop(1, 'rgba(16, 185, 129, 0.2)');
+
+      dailyChartInstance = new Chart(ctxDaily, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Thu nhập',
+              data: incomeSeries,
+              backgroundColor: gradIncome,
+              borderRadius: 99,
+              barPercentage: 0.55,
+              categoryPercentage: 0.7
+            },
+            {
+              label: 'Chi tiêu',
+              data: expenseSeries,
+              backgroundColor: gradExpense,
+              borderRadius: 99,
+              barPercentage: 0.55,
+              categoryPercentage: 0.7
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: { color: 'rgba(148, 163, 184, 0.08)', drawBorder: false },
+              ticks: {
+                color: '#64748b',
+                callback: val => (val >= 1000000 ? (val / 1000000).toFixed(0) + 'M' : val / 1000 + 'k'),
+                font: { size: 10 }
+              }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: '#64748b', font: { size: 10 } }
+            }
+          }
+        }
+      });
+
+      // Minimalist Donut Chart
+      const catTotals = {};
+      appState.transactions.filter(t => t.type === 'expense').forEach(t => {
+        catTotals[t.category] = (catTotals[t.category] || 0) + Number(t.amount);
+      });
+      const catLabels = Object.keys(catTotals);
+      const catValues = Object.values(catTotals);
+      const luxuryPalette = ['#e6c687', '#f59e0b', '#fb7185', '#34d399', '#38bdf8', '#a78bfa'];
+
+      const ctxCat = document.getElementById('expenseCategoryChart').getContext('2d');
+      if (categoryChartInstance) categoryChartInstance.destroy();
+      const hasCatData = catValues.length > 0;
+      categoryChartInstance = new Chart(ctxCat, {
+        type: 'doughnut',
+        data: {
+          labels: hasCatData ? catLabels : ['Chưa có chi tiêu'],
+          datasets: [{
+            data: hasCatData ? catValues : [1],
+            backgroundColor: hasCatData ? luxuryPalette.slice(0, catLabels.length) : ['rgba(148, 163, 184, 0.12)'],
+            borderWidth: 0,
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '74%',
+          plugins: { legend: { display: false } }
+        }
+      });
+
+      const totalExp = catValues.reduce((a, b) => a + b, 0) || 1;
+      if (!hasCatData) {
+        document.getElementById('categoryLegendList').innerHTML = `<p class="text-[11px] theme-text-sub">Chưa phát sinh dữ liệu chi tiêu.</p>`;
+      } else {
+        document.getElementById('categoryLegendList').innerHTML = catLabels.map((cat, idx) => {
+        const pct = Math.round((catValues[idx] / totalExp) * 100);
+        return `
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 truncate">
+              <span class="w-2 h-2 rounded-full shrink-0" style="background:${luxuryPalette[idx % luxuryPalette.length]}"></span>
+              <span class="truncate theme-text-sub text-[11px]">${cat}</span>
+            </div>
+            <span class="num-display font-semibold text-[11px]">${pct}%</span>
+          </div>
+        `;
+      }).join('');
+      }
+    }
+
+    // ==================== TAB 2: CASHFLOW LEDGER ====================
+    function populateCategoryDropdowns() {
+      const txType = document.getElementById('txTypeInput').value;
+      const list = txType === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+      const selectEl = document.getElementById('txCategoryInput');
+      selectEl.innerHTML = list.map(c => `<option value="${c}">${c}</option>`).join('');
+
+      const filterCatEl = document.getElementById('txFilterCategory');
+      const currentVal = filterCatEl.value || 'all';
+      const allCats = [...new Set([...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES])];
+      filterCatEl.innerHTML = `<option value="all">Mọi danh mục</option>` + allCats.map(c => `<option value="${c}">${c}</option>`).join('');
+      filterCatEl.value = currentVal;
+    }
+
+    function renderCashflowTab() {
+      populateCategoryDropdowns();
+      const dateInput = document.getElementById('txDateInput');
+      if (!dateInput.value) dateInput.value = getOffsetDate(0);
+
+      const query = (document.getElementById('txSearchInput').value || '').toLowerCase().trim();
+      const typeFilter = document.getElementById('txFilterType').value;
+      const catFilter = document.getElementById('txFilterCategory').value;
+
+      const filtered = appState.transactions.filter(t => {
+        if (typeFilter !== 'all' && t.type !== typeFilter) return false;
+        if (catFilter !== 'all' && t.category !== catFilter) return false;
+        if (query && !t.note.toLowerCase().includes(query) && !t.category.toLowerCase().includes(query)) return false;
+        return true;
+      }).sort((a, b) => b.date.localeCompare(a.date));
+
+      let sumInc = 0;
+      let sumExp = 0;
+      filtered.forEach(t => {
+        if (t.type === 'income') sumInc += Number(t.amount);
+        else sumExp += Number(t.amount);
+      });
+
+      document.getElementById('filteredIncomeSum').textContent = '+' + formatVND(sumInc);
+      document.getElementById('filteredExpenseSum').textContent = '-' + formatVND(sumExp);
+      document.getElementById('filteredNetSum').textContent = formatVND(sumInc - sumExp);
+
+      const grouped = {};
+      filtered.forEach(t => {
+        if (!grouped[t.date]) grouped[t.date] = [];
+        grouped[t.date].push(t);
+      });
+
+      const container = document.getElementById('dailyLedgerContainer');
+      const dates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
+
+      if (dates.length === 0) {
+        container.innerHTML = `<div class="p-8 text-center theme-text-sub text-xs">Chưa có giao dịch khớp bộ lọc.</div>`;
+        return;
+      }
+
+      container.innerHTML = dates.map(date => {
+        const items = grouped[date];
+        const dayIn = items.filter(i => i.type === 'income').reduce((s, i) => s + Number(i.amount), 0);
+        const dayOut = items.filter(i => i.type === 'expense').reduce((s, i) => s + Number(i.amount), 0);
+
+        return `
+          <div class="rounded-2xl theme-muted-box overflow-hidden">
+            <div class="px-4 py-2.5 border-b border-white/5 flex items-center justify-between text-xs">
+              <span class="font-semibold theme-text-sub">${date}</span>
+              <div class="flex items-center gap-3 num-display font-semibold">
+                ${dayIn > 0 ? `<span class="text-emerald-400">+${formatVND(dayIn)}</span>` : ''}
+                ${dayOut > 0 ? `<span class="text-amber-400">-${formatVND(dayOut)}</span>` : ''}
+              </div>
+            </div>
+            <div class="divide-y divide-white/5">
+              ${items.map(t => {
+                const isInc = t.type === 'income';
+                return `
+                  <div class="px-4 py-3 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <span class="w-1.5 h-7 rounded-full ${isInc ? 'bg-emerald-400' : 'bg-amber-400'}"></span>
+                      <div>
+                        <p class="text-xs font-semibold">${t.note}</p>
+                        <p class="text-[11px] theme-text-sub">${t.category} • ${t.wallet}</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span class="num-display text-xs font-bold ${isInc ? 'text-emerald-400' : 'text-amber-400'}">
+                        ${isInc ? '+' : '-'}${formatVND(t.amount)}
+                      </span>
+                      <button data-deltx="${t.id}" class="theme-text-muted hover:text-rose-400 p-1" title="Xóa">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ==================== TAB 3: DEBTS PORTFOLIO ====================
+    function renderDebtsTab() {
+      let sumBorrowedRem = 0;
+      let sumBorrowedPaid = 0;
+      let sumBorrowedTotal = 0;
+      let countBorrowed = 0;
+      let sumLentRem = 0;
+      let countLent = 0;
+
+      appState.debts.forEach(d => {
+        const rem = Math.max(0, d.totalAmount - d.paidAmount);
+        if (d.type === 'borrowed') {
+          sumBorrowedRem += rem;
+          sumBorrowedPaid += Number(d.paidAmount);
+          sumBorrowedTotal += Number(d.totalAmount);
+          if (rem > 0) countBorrowed++;
+        } else {
+          sumLentRem += rem;
+          if (rem > 0) countLent++;
+        }
+      });
+
+      const avgPct = sumBorrowedTotal > 0 ? Math.round((sumBorrowedPaid / sumBorrowedTotal) * 100) : 0;
+
+      document.getElementById('debtSummaryBorrowed').textContent = formatVND(sumBorrowedRem);
+      document.getElementById('debtCountBorrowed').textContent = countBorrowed + ' khoản nợ đang trả';
+      document.getElementById('debtSummaryPaid').textContent = formatVND(sumBorrowedPaid);
+      document.getElementById('debtProgressAvg').textContent = 'Tiến độ hoàn thành: ' + avgPct + '%';
+      document.getElementById('debtSummaryLent').textContent = formatVND(sumLentRem);
+      document.getElementById('debtCountLent').textContent = countLent + ' khoản cho vay cần thu';
+
+      const filteredDebts = appState.debts.filter(d => {
+        if (activeDebtFilter === 'all') return true;
+        return d.type === activeDebtFilter;
+      });
+
+      const grid = document.getElementById('debtCardsGrid');
+      if (filteredDebts.length === 0) {
+        grid.innerHTML = `<div class="luxury-card p-8 md:col-span-2 lg:col-span-3 text-center text-xs theme-text-sub">Chưa có khoản nợ hoặc khoản cho vay nào. Bấm "+ Thêm Khoản Nợ / Cho Vay" để bắt đầu theo dõi.</div>`;
+        return;
+      }
+      grid.innerHTML = filteredDebts.map(d => {
+        const rem = Math.max(0, d.totalAmount - d.paidAmount);
+        const pct = Math.min(100, Math.round((d.paidAmount / d.totalAmount) * 100));
+        const isBorrowed = d.type === 'borrowed';
+        return `
+          <div class="luxury-card p-5 flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center justify-between gap-2">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${isBorrowed ? 'bg-rose-500/15 text-rose-400' : 'bg-sky-500/15 text-sky-400'}">
+                  ${isBorrowed ? 'NỢ PHẢI TRẢ' : 'KHOẢN CHO VAY'}
+                </span>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] px-2 py-0.5 rounded-full theme-muted-box theme-text-sub">${d.priority}</span>
+                  <button data-deldebt="${d.id}" class="p-1 theme-text-muted hover:text-rose-400" title="Xóa">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+              </div>
+
+              <h4 class="font-bold text-sm mt-3">${d.title}</h4>
+              <p class="text-[11px] theme-text-sub mt-0.5">${d.note || 'Không có ghi chú'}</p>
+
+              <div class="grid grid-cols-2 gap-2 my-3.5 p-3 rounded-2xl theme-muted-box text-xs">
+                <div>
+                  <span class="theme-text-sub block text-[10px]">Còn lại</span>
+                  <span class="num-display font-extrabold text-sm ${isBorrowed ? 'text-rose-400' : 'text-sky-400'}">${formatVND(rem)}</span>
+                </div>
+                <div>
+                  <span class="theme-text-sub block text-[10px]">Tổng gốc</span>
+                  <span class="num-display font-semibold text-sm">${formatVND(d.totalAmount)}</span>
+                </div>
+              </div>
+
+              <div class="space-y-1.5">
+                <div class="flex justify-between text-[11px]">
+                  <span class="theme-text-sub">Đã trả: <strong class="num-display text-white/90">${formatVND(d.paidAmount)}</strong></span>
+                  <span class="num-display font-bold">${pct}%</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+                  <div class="h-full ${isBorrowed ? 'bg-gradient-to-r from-amber-400 to-rose-400' : 'bg-sky-400'} transition-all duration-300" style="width:${pct}%"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs">
+              <span class="theme-text-sub text-[11px]">Lãi: ${d.interestRate}%/năm • Hạn: ${d.dueDate}</span>
+              ${rem > 0 ? `
+                <button data-paydebt="${d.id}" class="px-3.5 py-1.5 rounded-full font-semibold text-xs btn-signature">
+                  ${isBorrowed ? 'Trả bớt' : 'Thu nợ'}
+                </button>
+              ` : `<span class="text-emerald-400 font-semibold">Đã tất toán ✓</span>`}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ==================== INTERACTION HANDLERS ====================
+    function activateTab(tabName) {
+      document.querySelectorAll('.nav-tab[data-tab]').forEach(b => {
+        b.classList.toggle('tab-active', b.getAttribute('data-tab') === tabName);
+      });
+      document.querySelectorAll('.dock-btn').forEach(b => {
+        const active = b.getAttribute('data-docktab') === tabName;
+        b.style.color = active ? 'var(--gold-text)' : 'var(--text-secondary)';
+      });
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+      const panel = document.getElementById('tab-' + tabName);
+      if (panel) panel.classList.remove('hidden');
+      renderAll();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderAll();
+
+      // Top Tabs & Bottom Dock Navigation
+      document.querySelectorAll('.nav-tab[data-tab]').forEach(btn => {
+        btn.addEventListener('click', () => activateTab(btn.getAttribute('data-tab')));
+      });
+      document.querySelectorAll('.dock-btn').forEach(btn => {
+        btn.addEventListener('click', () => activateTab(btn.getAttribute('data-docktab')));
+      });
+
+      document.querySelectorAll('[data-goto]').forEach(btn => {
+        btn.addEventListener('click', () => activateTab(btn.getAttribute('data-goto')));
+      });
+
+      // Quick Transaction Entry
+      const goQuickTx = () => {
+        activateTab('cashflow');
+        document.getElementById('txAmountInput').focus();
+      };
+      document.getElementById('btnDockPlus').addEventListener('click', goQuickTx);
+
+      // Debt Modal
+      const openDebtModal = () => {
+        document.getElementById('debtDueInput').value = getOffsetDate(-15);
+        document.getElementById('debtModal').classList.remove('hidden');
+        document.getElementById('debtModal').classList.add('flex');
+      };
+      document.getElementById('btnOpenDebtModal2').addEventListener('click', openDebtModal);
+
+      const closeDebtModal = () => {
+        document.getElementById('debtModal').classList.add('hidden');
+        document.getElementById('debtModal').classList.remove('flex');
+      };
+      document.getElementById('btnCloseDebtModal').addEventListener('click', closeDebtModal);
+      document.getElementById('btnCancelDebtModal').addEventListener('click', closeDebtModal);
+
+      // Cashflow Type Switch
+      document.querySelectorAll('.tx-type-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const t = btn.getAttribute('data-txtype');
+          document.getElementById('txTypeInput').value = t;
+          document.querySelectorAll('.tx-type-btn').forEach(b => {
+            b.className = 'tx-type-btn py-2 rounded-lg text-xs font-semibold theme-text-sub transition-all';
+          });
+          btn.className = `tx-type-btn py-2 rounded-lg text-xs font-semibold text-slate-950 shadow-sm transition-all ${t === 'income' ? 'bg-emerald-400' : 'bg-amber-400'}`;
+          populateCategoryDropdowns();
+        });
+      });
+
+      // Quick Amounts
+      document.querySelectorAll('.quick-amt-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById('txAmountInput').value = btn.getAttribute('data-quickamt');
+        });
+      });
+
+      // Submit Transaction
+      document.getElementById('cashflowForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const type = document.getElementById('txTypeInput').value;
+        const amount = Number(document.getElementById('txAmountInput').value);
+        const category = document.getElementById('txCategoryInput').value;
+        const date = document.getElementById('txDateInput').value || getOffsetDate(0);
+        const wallet = document.getElementById('txWalletInput').value;
+        const note = document.getElementById('txNoteInput').value.trim();
+
+        if (!amount || !note) return;
+
+        appState.transactions.unshift({
+          id: 'tx_' + Date.now(),
+          type,
+          amount,
+          category,
+          wallet,
+          date,
+          note
+        });
+        saveState();
+        document.getElementById('txAmountInput').value = '';
+        document.getElementById('txNoteInput').value = '';
+        renderAll();
+        showToast(
+          type === 'income' ? 'Ghi Nhận Thu Nhập Thành Công' : 'Ghi Nhận Chi Tiêu Thành Công',
+          {
+            badge: type === 'income' ? 'PHIẾU THU HẰNG NGÀY' : 'PHIẾU CHI HẰNG NGÀY',
+            subtitle: 'Số liệu đã được cộng dồn vào Sổ Thu Chi & Tổng Quan',
+            tone: type,
+            rows: [
+              { label: 'Số tiền', value: (type === 'income' ? '+' : '-') + formatVND(amount), color: type === 'income' ? 'text-emerald-400 text-sm' : 'text-amber-400 text-sm' },
+              { label: 'Danh mục', value: category },
+              { label: 'Nguồn tiền', value: wallet },
+              { label: 'Nội dung', value: note },
+              { label: 'Ngày ghi nhận', value: date }
+            ]
+          }
+        );
+      });
+
+      document.getElementById('txSearchInput').addEventListener('input', renderCashflowTab);
+      document.getElementById('txFilterType').addEventListener('change', renderCashflowTab);
+      document.getElementById('txFilterCategory').addEventListener('change', renderCashflowTab);
+      document.getElementById('chartRangeSelect').addEventListener('change', renderCharts);
+
+      // Submit Debt
+      document.getElementById('debtForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const type = document.getElementById('debtTypeInput').value;
+        const priority = document.getElementById('debtPriorityInput').value;
+        const title = document.getElementById('debtTitleInput').value.trim();
+        const totalAmount = Number(document.getElementById('debtTotalInput').value);
+        const paidAmount = Number(document.getElementById('debtPaidInput').value || 0);
+        const interestRate = Number(document.getElementById('debtRateInput').value || 0);
+        const dueDate = document.getElementById('debtDueInput').value;
+        const note = document.getElementById('debtNoteInput').value.trim();
+
+        appState.debts.unshift({
+          id: 'd_' + Date.now(),
+          type,
+          priority,
+          title,
+          totalAmount,
+          paidAmount,
+          interestRate,
+          dueDate,
+          note
+        });
+        saveState();
+        closeDebtModal();
+        e.target.reset();
+        renderAll();
+        showToast(
+          type === 'borrowed' ? 'Đã Lưu Khoản Nợ Phải Trả' : 'Đã Lưu Khoản Cho Vay',
+          {
+            badge: type === 'borrowed' ? 'HỒ SƠ NỢ ĐI VAY' : 'HỒ SƠ CHO VAY PHẢI THU',
+            subtitle: 'Khoản mục đã được đưa vào danh mục theo dõi dư nợ',
+            tone: 'debt',
+            rows: [
+              { label: 'Khoản mục', value: title },
+              { label: 'Tổng gốc', value: formatVND(totalAmount), color: 'text-rose-400 text-sm' },
+              { label: 'Còn lại', value: formatVND(Math.max(0, totalAmount - paidAmount)) },
+              { label: 'Lãi suất & Ưu tiên', value: interestRate + '%/năm • ' + priority },
+              { label: 'Hạn thanh toán', value: dueDate }
+            ]
+          }
+        );
+      });
+
+      // Debt Filter
+      document.querySelectorAll('.debt-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          activeDebtFilter = btn.getAttribute('data-debtfilter');
+          document.querySelectorAll('.debt-filter-btn').forEach(b => b.classList.remove('tab-active'));
+          btn.classList.add('tab-active');
+          renderDebtsTab();
+          if (window.lucide) window.lucide.createIcons();
+        });
+      });
+
+      // Delegated Clicks (Pay debt, Delete tx/debt)
+      document.body.addEventListener('click', e => {
+        const payDebtBtn = e.target.closest('[data-paydebt]');
+        if (payDebtBtn) {
+          const debtId = payDebtBtn.getAttribute('data-paydebt');
+          const d = appState.debts.find(item => item.id === debtId);
+          if (!d) return;
+          const rem = Math.max(0, d.totalAmount - d.paidAmount);
+          document.getElementById('payDebtIdInput').value = d.id;
+          document.getElementById('payDebtModalTitle').textContent = d.type === 'borrowed' ? 'Trả Nợ: ' + d.title : 'Thu Hồi Nợ: ' + d.title;
+          document.getElementById('payDebtInfoText').textContent = `Dư nợ còn lại: ${formatVND(rem)}`;
+          document.getElementById('payDebtAmountInput').value = Math.min(rem, 1000000);
+          document.getElementById('payDebtAmountInput').max = rem;
+          document.getElementById('payDebtModal').classList.remove('hidden');
+          document.getElementById('payDebtModal').classList.add('flex');
+        }
+
+        const delTxBtn = e.target.closest('[data-deltx]');
+        if (delTxBtn) {
+          const id = delTxBtn.getAttribute('data-deltx');
+          appState.transactions = appState.transactions.filter(t => t.id !== id);
+          saveState();
+          renderAll();
+          showToast('Đã xóa giao dịch');
+        }
+
+        const delDebtBtn = e.target.closest('[data-deldebt]');
+        if (delDebtBtn) {
+          const id = delDebtBtn.getAttribute('data-deldebt');
+          appState.debts = appState.debts.filter(d => d.id !== id);
+          saveState();
+          renderAll();
+          showToast('Đã xóa khoản nợ');
+        }
+      });
+
+      // Pay Debt Submit
+      const closePayDebtModal = () => {
+        document.getElementById('payDebtModal').classList.add('hidden');
+        document.getElementById('payDebtModal').classList.remove('flex');
+      };
+      document.getElementById('btnClosePayDebtModal').addEventListener('click', closePayDebtModal);
+      document.getElementById('btnCancelPayDebt').addEventListener('click', closePayDebtModal);
+
+      document.getElementById('payDebtForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const id = document.getElementById('payDebtIdInput').value;
+        const amt = Number(document.getElementById('payDebtAmountInput').value);
+        const sync = document.getElementById('payDebtSyncCashflow').checked;
+        const d = appState.debts.find(item => item.id === id);
+        if (!d || amt <= 0) return;
+
+        d.paidAmount = Math.min(d.totalAmount, Number(d.paidAmount) + amt);
+        if (sync) {
+          appState.transactions.unshift({
+            id: 'tx_' + Date.now(),
+            type: d.type === 'borrowed' ? 'expense' : 'income',
+            amount: amt,
+            category: d.type === 'borrowed' ? 'Trả nợ & Lãi vay' : 'Thu hồi nợ cho vay',
+            wallet: 'Tài khoản Ngân hàng',
+            date: getOffsetDate(0),
+            note: (d.type === 'borrowed' ? 'Trả nợ: ' : 'Thu hồi nợ: ') + d.title
+          });
+        }
+        saveState();
+        closePayDebtModal();
+        renderAll();
+        const remAfter = Math.max(0, d.totalAmount - d.paidAmount);
+        showToast(
+          remAfter === 0 ? 'Chúc Mừng! Đã Tất Toán Xong' : 'Cập Nhật Thanh Toán Thành Công',
+          {
+            badge: d.type === 'borrowed' ? 'BIÊN LAI TRẢ NỢ' : 'BIÊN LAI THU HỒI NỢ',
+            subtitle: sync ? 'Đã đồng bộ tự động vào Sổ Thu Chi hằng ngày' : 'Đã cập nhật tiến độ thanh toán gốc',
+            tone: 'income',
+            rows: [
+              { label: 'Khoản mục', value: d.title },
+              { label: 'Số tiền vừa thanh toán', value: formatVND(amt), color: 'text-emerald-400 text-sm' },
+              { label: 'Dư nợ còn lại', value: formatVND(remAfter), color: remAfter === 0 ? 'text-emerald-400' : 'text-rose-400' },
+              { label: 'Tiến độ hoàn thành', value: Math.min(100, Math.round((d.paidAmount / d.totalAmount) * 100)) + '%' }
+            ]
+          }
+        );
+      });
+
+      // Theme Studio Modal
+      const openThemeModal = () => {
+        document.getElementById('themeModal').classList.remove('hidden');
+        document.getElementById('themeModal').classList.add('flex');
+      };
+      const closeThemeModal = () => {
+        document.getElementById('themeModal').classList.add('hidden');
+        document.getElementById('themeModal').classList.remove('flex');
+      };
+      document.getElementById('btnDockTheme').addEventListener('click', openThemeModal);
+      document.getElementById('btnCloseThemeModal').addEventListener('click', closeThemeModal);
+      document.getElementById('btnDoneThemeModal').addEventListener('click', closeThemeModal);
+
+      document.querySelectorAll('.theme-preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          appState.theme = btn.getAttribute('data-settheme');
+          saveState();
+          applyTheme();
+          showToast('Hoàn tất! Đã chuyển đổi giao diện mới.');
+        });
+      });
+
+      document.getElementById('btnResetDemoData').addEventListener('click', () => {
+        appState = createInitialState();
+        saveState();
+        closeThemeModal();
+        renderAll();
+        showToast('Đã Đặt Lại Toàn Bộ Số Liệu Về 0', {
+          badge: 'LÀM MỚI DỮ LIỆU',
+          subtitle: 'Tất cả giao dịch và khoản nợ đã được đưa về 0 ₫',
+          tone: 'default',
+          rows: [
+            { label: 'Số dư thuần', value: '0 ₫' },
+            { label: 'Tổng thu / Tổng chi', value: '0 ₫ / 0 ₫' },
+            { label: 'Tổng dư nợ', value: '0 ₫' }
+          ]
+        });
+      });
+
+      // Completion Popup Modal Buttons
+      const closeSuccessPopup = () => {
+        const box = document.getElementById('toastBox');
+        box.classList.add('hidden');
+        box.classList.remove('flex');
+      };
+      document.getElementById('btnClosePopupModal').addEventListener('click', closeSuccessPopup);
+      document.getElementById('btnPopupGoDashboard').addEventListener('click', () => {
+        closeSuccessPopup();
+        activateTab('dashboard');
+      });
+      document.getElementById('toastBox').addEventListener('click', e => {
+        if (e.target.id === 'toastBox') closeSuccessPopup();
+      });
+    });
+  </script>
+</body>
+</html>
